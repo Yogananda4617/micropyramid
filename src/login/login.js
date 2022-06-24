@@ -14,23 +14,31 @@ function Login() {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     setFormErrors(validate(formValues));
     setIsSubmit(true);
-    localStorage.setItem("user", JSON.stringify(formValues));
-    console.log(formValues);
-    history.push('/home')
+   
   };
 
   useEffect(() => {
     console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
+    let mail  = localStorage.getItem("email");
+    let password  = localStorage.getItem("password");
+    if (Object.keys(formErrors).length === 0 && isSubmit  ) {
+      console.log(JSON.stringify(formValues.email));
+      console.log(mail)
+      if(mail == JSON.stringify(formValues.email) && password == JSON.stringify(formValues.password)){
+      history.push('/home');
+      }
+      else{
+        alert("Please register first ");
+        history.push('/register');
+      }
     }
   }, [formErrors]);
   const validate = (values) => {
-    const errors = {};
+    var errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     
     if (!values.email) {
@@ -48,11 +56,7 @@ function Login() {
 
   return (
     <div className="container">
-      {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className=" message success">Signed in successfully</div>
-      ) : (
-        ""
-      )}
+     
 
       <form onSubmit={handleSubmit}>
         <h1>Login Form</h1>
@@ -82,13 +86,11 @@ function Login() {
             />
           </div>
           <p>{formErrors.password}</p>
-          <button >Submit</button>
-        
+          <button className="submitbttn" >Submit</button>
+        <br/>
         <Link to="/register">
-						<button type="button" className="white_btn">
-							register
-						</button>
-					</Link>
+		<button type="button" className="white_btn">register</button>
+	</Link>
       </form>
     </div>
   );
