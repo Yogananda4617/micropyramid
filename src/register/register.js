@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {  useHistory} from "react-router-dom";
+import { Link, useHistory} from "react-router-dom";
 import "./register.css";
 
 function Register() {
@@ -18,13 +18,16 @@ function Register() {
     e.preventDefault();
     setFormErrors(validate(formValues));
     setIsSubmit(true);
-    history.push('/login')
   };
 
   useEffect(() => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       console.log(formValues);
+      localStorage.setItem("username", JSON.stringify(formValues.username));
+      localStorage.setItem("email", JSON.stringify(formValues.email));
+      localStorage.setItem("password", JSON.stringify(formValues.password));
+      history.push('/login');
     }
   }, [formErrors]);
   const validate = (values) => {
@@ -32,9 +35,7 @@ function Register() {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     if (!values.username) {
       errors.username = "Username is required!";
-    }else if (values.username.length < 5) {
-      errors.password = "Password must be more than 5 characters";
-    } 
+    }
     if (!values.email) {
       errors.email = "Email is required!";
     } else if (!regex.test(values.email)) {
@@ -50,16 +51,12 @@ function Register() {
 
   return (
     <div className="container">
-      {Object.keys(formErrors).length === 0 && isSubmit ? (
-        <div className="ui message success">Signed in successfully</div>
-      ) : (
-        ""
-      )}
+      
 
       <form onSubmit={handleSubmit}>
         <h1>Register Form</h1>
-        
-      
+        <div className="ui divider"></div>
+        <div className="ui form">
           <div className="field">
             <label>Username</label>
             <input
@@ -93,8 +90,8 @@ function Register() {
             />
           </div>
           <p>{formErrors.password}</p>
-          <button className="fluid ui button blue">Submit</button>
-        
+          <button className="submitbttn">Submit</button>
+        </div>
       </form>
     </div>
   );
